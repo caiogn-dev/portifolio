@@ -9,64 +9,12 @@ export default function Hero() {
   const accent = useColorModeValue("blue.600", "blue.300")
   const shadow = useColorModeValue("lg", "dark-lg")
 
-  const figureRef = React.useRef<HTMLDivElement | null>(null)
-  const animRef = React.useRef<Animation | null>(null)
-
-  const prefersReduced =
-    typeof window !== "undefined" &&
-    window.matchMedia &&
-    window.matchMedia("(prefers-reduced-motion: reduce)").matches
-
-  const playHoverAnimation = React.useCallback(() => {
-    if (prefersReduced) return
-    const el = figureRef.current
-    if (!el || typeof el.animate !== "function") return
-
-    // Cancel any running animation so we can replay cleanly
-    if (animRef.current) {
-      try {
-        animRef.current.cancel()
-      } catch (e) {
-        /* ignore */
-      }
-      animRef.current = null
-    }
-
-    const keyframes: Keyframe[] = [
-      { transform: "translateY(-24px)", opacity: 0 },
-      { transform: "translateY(6px)", opacity: 1, offset: 0.65 },
-      { transform: "translateY(-6px)", opacity: 1 },
-    ]
-
-    const animation = el.animate(keyframes, {
-      duration: 1600,
-      easing: "cubic-bezier(.16,.84,.33,1)",
-      fill: "forwards",
-    })
-
-    animRef.current = animation
-    animation.onfinish = () => {
-      animRef.current = null
-    }
-  }, [prefersReduced])
+  const [mounted, setMounted] = React.useState(false)
 
   React.useEffect(() => {
-    return () => {
-      if (animRef.current) {
-        try {
-          animRef.current.cancel()
-        } catch (e) {
-          /* ignore */
-        }
-        animRef.current = null
-      }
-    }
-  }, [])
-
-  // Play the initial float animation on mount (once), unless user prefers reduced motion.
-  React.useEffect(() => {
-    playHoverAnimation()
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    // Defer to next frame so the CSS transition runs
+    const id = requestAnimationFrame(() => setMounted(true))
+    return () => cancelAnimationFrame(id)
   }, [])
 
   return (
@@ -82,16 +30,13 @@ export default function Hero() {
             overflow="hidden"
             boxSize={{ base: "220px", md: "360px" }}
             mx="auto"
-            className="hero-figure"
+            className={`hero-figure ${mounted ? "mounted" : ""}`}
             tabIndex={0}
             boxShadow={shadow}
-            ref={figureRef as any}
-            onMouseEnter={playHoverAnimation}
-            onTouchStart={playHoverAnimation}
             onKeyDown={(e) => {
-              // allow Enter/Space to trigger animation when focused
+              // keep keyboard accessibility: Enter/Space focuses show :focus-visible state
               if (e.key === "Enter" || e.key === " ") {
-                playHoverAnimation()
+                // noop — CSS handles focus-visible styling
               }
             }}
           >
