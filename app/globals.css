@@ -24,3 +24,38 @@ body {
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
 }
+
+/* Support next-themes which toggles `class` on <html> (attribute="class") */
+html.light {
+  --background: #ffffff;
+  --foreground: #171717;
+}
+
+html.dark {
+  --background: #0a0a0a;
+  --foreground: #ededed;
+}
+
+/* No custom landing background — using Chakra theme for color modes */
+
+/* Simple float-down animation for hero image */
+@keyframes floatDown {
+  from {
+    transform: translateY(-18px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.float-down {
+  animation: floatDown 720ms cubic-bezier(.22,.9,.32,1) both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .float-down {
+    animation: none !important;
+  }
+}

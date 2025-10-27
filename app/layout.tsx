@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
+import { Provider } from "@/components/ui/provider";
+import NavBar from "@/components/NavBar";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -23,11 +25,23 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        {children}
+        {/* Inject a small script to set the initial color mode class on <html>
+           This avoids a white flash before React hydrates and ensures Chakra's
+           CSS variables (which use the .chakra-theme selector) apply immediately. */}
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `;(function(){try{var m=localStorage.getItem('chakra-color-mode');var mode=(m==='light'||m==='dark')?m:(window.matchMedia&&window.matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light');document.documentElement.classList.add('chakra-theme');document.documentElement.classList.remove('light','dark');document.documentElement.classList.add(mode);}catch(e){} })()`,
+          }}
+        />
+        
+        <Provider>
+          <NavBar />
+          {children}
+        </Provider>
       </body>
     </html>
   );
