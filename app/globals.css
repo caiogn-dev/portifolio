@@ -39,19 +39,49 @@ html.dark {
 /* No custom landing background — using Chakra theme for color modes */
 
 /* Simple float-down animation for hero image */
+
 @keyframes floatDown {
-  from {
-    transform: translateY(-18px);
+  0% {
+    transform: translateY(-36px);
     opacity: 0;
   }
-  to {
-    transform: translateY(0);
+  60% {
+    transform: translateY(8px);
+    opacity: 1;
+  }
+  100% {
+    /* land a few pixels higher so the image sits slightly up */
+    transform: translateY(-6px);
     opacity: 1;
   }
 }
 
-.float-down {
-  animation: floatDown 720ms cubic-bezier(.22,.9,.32,1) both;
+
+/* .float-down no longer used — animations are driven by the Web Animations API to avoid
+   CSS/JS conflicts and flicker. Keep keyframes for reference. */
+
+
+/* Interactive hover/focus 'pop' for hero image */
+.hero-figure {
+  will-change: transform;
+  transition: transform 420ms cubic-bezier(.22,.9,.32,1), box-shadow 420ms ease;
+}
+
+.hero-figure:hover,
+.hero-figure:focus-visible {
+  /* Use shadow/brightness on hover only — movement is driven by the Web Animations API */
+  box-shadow: 0 18px 40px rgba(2,6,23,0.25);
+  filter: brightness(1.03);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-figure,
+  .hero-figure:hover,
+  .hero-figure:focus {
+    transition: none !important;
+    transform: none !important;
+    animation: none !important;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {

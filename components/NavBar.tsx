@@ -3,7 +3,7 @@
 import * as React from "react"
 import Link from "next/link"
 import { Box, Flex, HStack, Button, VStack, Text, Spacer } from "@chakra-ui/react"
-import { ColorModeButton } from "@/components/ui/color-mode"
+import { ColorModeButton, useColorModeValue } from "@/components/ui/color-mode"
 
 export default function NavBar() {
   const [open, setOpen] = React.useState(false)
@@ -14,44 +14,75 @@ export default function NavBar() {
     { href: "#contact", label: "Contato" },
   ]
 
+  const bg = useColorModeValue("rgba(255,255,255,0.55)", "rgba(6,6,8,0.45)")
+  const borderColor = useColorModeValue("blackAlpha.100", "whiteAlpha.100")
+
   return (
-    <Box as="header" w="100%" position="sticky" top={0} zIndex={2} bg="transparent">
+    <Box
+      as="header"
+      w="100%"
+      position="sticky"
+      top={0}
+      zIndex={20}
+      bg="transparent"
+      style={{ WebkitBackdropFilter: "blur(6px)", backdropFilter: "blur(6px)" }}
+    >
       <Flex
         align="center"
         maxW="container.lg"
         mx="auto"
-        py={4}
-        px={{ base: 4, md: 0 }}
+        py={3}
+        px={{ base: 6, md: 4 }}
         alignItems="center"
+        position="relative"
       >
-        <HStack gap={4} alignItems="center">
-          <Text fontWeight="bold">Caio</Text>
-        </HStack>
+        {/* Left: logo / name */}
+        <Box zIndex={30}>
+          <Text fontWeight="700" letterSpacing="tight" fontSize={{ base: "lg", md: "xl" }}>
+            Caio
+          </Text>
+        </Box>
 
-        <Spacer />
+        {/* Center: nav links (desktop) */}
+        <Box
+          position={{ base: "static", md: "absolute" }}
+          left={0}
+          right={0}
+          mx="auto"
+          display={{ base: "none", md: "block" }}
+          textAlign="center"
+        >
+          <HStack gap={6} justify="center">
+            {links.map((l) => (
+              <Link key={l.href} href={l.href}>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  _hover={{ bg: useColorModeValue("blackAlpha.50", "whiteAlpha.50") }}
+                >
+                  {l.label}
+                </Button>
+              </Link>
+            ))}
+          </HStack>
+        </Box>
 
-        {/* Desktop links */}
-        <HStack display={{ base: "none", md: "flex" }} gap={6} alignItems="center">
-          {links.map((l) => (
-            <Link key={l.href} href={l.href} passHref>
-              <Button as="a" variant="ghost">
-                {l.label}
+        {/* Right: actions */}
+        <Box marginLeft="auto" zIndex={30}>
+          <HStack gap={3} alignItems="center">
+            <ColorModeButton />
+            <Link href="#contact">
+              <Button colorScheme="blue" size="sm">
+                Contratar
               </Button>
             </Link>
-          ))}
-          <ColorModeButton />
-          <Link href="#contact" passHref>
-            <Button as="a" colorScheme="blue">
-              Contratar
-            </Button>
-          </Link>
-        </HStack>
-
-        {/* Mobile toggle */}
-        <Box display={{ base: "block", md: "none" }}>
-          <Button variant="ghost" onClick={() => setOpen((s) => !s)}>
-            {open ? "Fechar" : "Menu"}
-          </Button>
+            {/* Mobile toggle */}
+            <Box display={{ base: "block", md: "none" }}>
+              <Button variant="ghost" onClick={() => setOpen((s) => !s)}>
+                {open ? "Fechar" : "Menu"}
+              </Button>
+            </Box>
+          </HStack>
         </Box>
       </Flex>
 
@@ -60,8 +91,8 @@ export default function NavBar() {
         <Box px={4} pb={4}>
           <VStack gap={2} alignItems="stretch">
             {links.map((l) => (
-              <Link key={l.href} href={l.href} passHref>
-                <Button as="a" variant="ghost" justifyContent="flex-start">
+              <Link key={l.href} href={l.href}>
+                <Button variant="ghost" justifyContent="flex-start" onClick={() => setOpen(false)}>
                   {l.label}
                 </Button>
               </Link>

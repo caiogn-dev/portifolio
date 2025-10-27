@@ -1,5 +1,6 @@
 "use client"
 
+import React from "react"
 import { Box, Container, Heading, Text, Button, Image, VStack, HStack } from "@chakra-ui/react"
 import { useColorModeValue } from "@/components/ui/color-mode"
 import Link from "next/link"
@@ -8,10 +9,70 @@ export default function Hero() {
   const accent = useColorModeValue("blue.600", "blue.300")
   const shadow = useColorModeValue("lg", "dark-lg")
 
+  const figureRef = React.useRef<HTMLDivElement | null>(null)
+  const animRef = React.useRef<Animation | null>(null)
+
+  const prefersReduced =
+    typeof window !== "undefined" &&
+    window.matchMedia &&
+    window.matchMedia("(prefers-reduced-motion: reduce)").matches
+
+  const playHoverAnimation = React.useCallback(() => {
+    if (prefersReduced) return
+    const el = figureRef.current
+    if (!el || typeof el.animate !== "function") return
+
+    // Cancel any running animation so we can replay cleanly
+    if (animRef.current) {
+      try {
+        animRef.current.cancel()
+      } catch (e) {
+        /* ignore */
+      }
+      animRef.current = null
+    }
+
+    const keyframes: Keyframe[] = [
+      { transform: "translateY(-24px)", opacity: 0 },
+      { transform: "translateY(6px)", opacity: 1, offset: 0.65 },
+      { transform: "translateY(-6px)", opacity: 1 },
+    ]
+
+    const animation = el.animate(keyframes, {
+      duration: 1600,
+      easing: "cubic-bezier(.16,.84,.33,1)",
+      fill: "forwards",
+    })
+
+    animRef.current = animation
+    animation.onfinish = () => {
+      animRef.current = null
+    }
+  }, [prefersReduced])
+
+  React.useEffect(() => {
+    return () => {
+      if (animRef.current) {
+        try {
+          animRef.current.cancel()
+        } catch (e) {
+          /* ignore */
+        }
+        animRef.current = null
+      }
+    }
+  }, [])
+
+  // Play the initial float animation on mount (once), unless user prefers reduced motion.
+  React.useEffect(() => {
+    playHoverAnimation()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
+
   return (
     <Box as="section" py={{ base: 12, md: 20 }}>
       <Container maxW="container.md" textAlign="center">
-  <VStack gap={6} align="center">
+        <VStack gap={6} align="center">
           <Box
             as="figure"
             mb={2}
@@ -19,12 +80,29 @@ export default function Hero() {
             borderColor={accent}
             borderRadius="full"
             overflow="hidden"
-            boxSize={{ base: "220px", md: "300px" }}
+            boxSize={{ base: "220px", md: "360px" }}
             mx="auto"
-            className="float-down"
+            className="hero-figure"
+            tabIndex={0}
             boxShadow={shadow}
+            ref={figureRef as any}
+            onMouseEnter={playHoverAnimation}
+            onTouchStart={playHoverAnimation}
+            onKeyDown={(e) => {
+              // allow Enter/Space to trigger animation when focused
+              if (e.key === "Enter" || e.key === " ") {
+                playHoverAnimation()
+              }
+            }}
           >
-            <Image src="/chef.png" alt="avatar" objectFit="cover" width="100%" height="100%" />
+            <Image
+              src="/profile.png"
+              alt="avatar"
+              objectFit="cover"
+              objectPosition="top center"
+              width="100%"
+              height="100%"
+            />
           </Box>
 
           <Heading as="h1" size={{ base: "xl", md: "2xl" }} lineHeight="1.05">

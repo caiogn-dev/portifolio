@@ -41,9 +41,9 @@ export default function Projects() {
               <Text mb={4} color="muted">
                 {p.description}
               </Text>
-              <Link href={p.href} passHref>
-                <ChakraLink color="blue.500">Ver detalhes →</ChakraLink>
-              </Link>
+              <ChakraLink as={Link} href={p.href} color="blue.500">
+                Ver detalhes →
+              </ChakraLink>
             </Box>
           ))}
         </SimpleGrid>
