@@ -2,8 +2,10 @@
 
 import * as React from "react"
 import Link from "next/link"
-import { Box, Flex, HStack, Button, VStack, Text, Spacer } from "@chakra-ui/react"
+import { Box, Flex, HStack, Button, VStack, Text, IconButton, Link as ChakraLink } from "@chakra-ui/react"
 import { ColorModeButton, useColorModeValue } from "@/components/ui/color-mode"
+import { FaGithub, FaLinkedin, FaInstagram } from "react-icons/fa"
+import { BsTwitterX } from "react-icons/bs"
 
 export default function NavBar() {
   const [open, setOpen] = React.useState(false)
@@ -39,7 +41,7 @@ export default function NavBar() {
         {/* Left: logo / name */}
         <Box zIndex={30}>
           <Text fontWeight="700" letterSpacing="tight" fontSize={{ base: "lg", md: "xl" }}>
-            Caio
+            Portifólio
           </Text>
         </Box>
 
@@ -70,6 +72,21 @@ export default function NavBar() {
         {/* Right: actions */}
         <Box marginLeft="auto" zIndex={30}>
           <HStack gap={3} alignItems="center">
+            {/* Social links (desktop only) */}
+            <HStack gap={2} display={{ base: "none", md: "flex" }} alignItems="center">
+              <ChakraLink href="https://github.com/your-username" target="_blank" rel="noopener noreferrer" aria-label="GitHub">
+                <Box as={FaGithub} fontSize="lg" />
+              </ChakraLink>
+              <ChakraLink href="https://www.linkedin.com/in/your-username" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn">
+                <Box as={FaLinkedin} fontSize="lg" />
+              </ChakraLink>
+              <ChakraLink href="https://www.instagram.com/your-username" target="_blank" rel="noopener noreferrer" aria-label="Instagram">
+                <Box as={FaInstagram} fontSize="lg" />
+              </ChakraLink>
+              <ChakraLink href="https://x.com/your-username" target="_blank" rel="noopener noreferrer" aria-label="X">
+                <Box as={BsTwitterX} fontSize="lg" />
+              </ChakraLink>
+            </HStack>
             <ColorModeButton />
             <Link href="#contact">
               <Button colorScheme="blue" size="sm">

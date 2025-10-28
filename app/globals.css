@@ -99,3 +99,31 @@ html.dark {
     animation: none !important;
   }
 }
+
+/* Copy/text entrance (bottom -> top) matching hero figure timing */
+.hero-copy {
+  will-change: transform, opacity;
+  transform: translateY(12px);
+  opacity: 0;
+  transition: transform 900ms cubic-bezier(.16,.84,.33,1), opacity 700ms ease;
+}
+
+.hero-copy.mounted {
+  transform: translateY(0);
+  opacity: 1;
+}
+
+.hero-copy:hover,
+.hero-copy:focus-visible {
+  transform: translateY(-6px) scale(1.01);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-copy,
+  .hero-copy:hover,
+  .hero-copy:focus-visible {
+    transition: none !important;
+    transform: none !important;
+    opacity: 1 !important;
+  }
+}

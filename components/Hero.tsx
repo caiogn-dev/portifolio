@@ -50,21 +50,37 @@ export default function Hero() {
             />
           </Box>
 
-          <Heading as="h1" size={{ base: "xl", md: "2xl" }} lineHeight="1.05">
-            Caio
+          <Heading
+            as="h1"
+            size={{ base: "xl", md: "2xl" }}
+            lineHeight="1.05"
+            className={`hero-copy ${mounted ? "mounted" : ""}`}
+            style={{ transitionDelay: "120ms" }}
+          >
+            Caio Gonçalves Nascimento
           </Heading>
 
-          <Text fontWeight="600" color={useColorModeValue("gray.700", "gray.300")}>
+          <Text
+            fontWeight="600"
+            color={useColorModeValue("gray.700", "gray.300")}
+            className={`hero-copy ${mounted ? "mounted" : ""}`}
+            style={{ transitionDelay: "180ms" }}
+          >
             Desenvolvedor Full Stack
           </Text>
 
-          <Text maxW="2xl" color={useColorModeValue("gray.600", "gray.400")}>
+          <Text
+            maxW="2xl"
+            color={useColorModeValue("gray.600", "gray.400")}
+            className={`hero-copy ${mounted ? "mounted" : ""}`}
+            style={{ transitionDelay: "240ms" }}
+          >
             Eu construo aplicações web completas — front-end com React/Next.js e interfaces
             acessíveis, e back-end com Node.js, bancos relacionais, e APIs bem testadas. Trabalho
             com TypeScript, Prisma, PostgreSQL, Chakra UI e práticas de testes e CI/CD.
           </Text>
 
-          <HStack gap={4} mt={2}>
+          <HStack gap={4} mt={2} className={`hero-copy ${mounted ? "mounted" : ""}`} style={{ transitionDelay: "300ms" }}>
             <Link href="#projects">
               <Button colorScheme="blue">Ver projetos</Button>
             </Link>

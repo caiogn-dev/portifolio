@@ -6,21 +6,21 @@ import Link from "next/link"
 const projects = [
   {
     id: "proj-1",
-    title: "Projeto A",
+    title: "Ivoneth Banqueteria",
     description: "Uma breve descrição do projeto A. Tecnologia: Next.js, Chakra UI.",
-    href: "#",
+    href: "https://ivonethbanqueteria.com.br",
   },
   {
     id: "proj-2",
-    title: "Projeto B",
+    title: "Mercado Livre AFL Django",
     description: "Uma breve descrição do projeto B. Foco em performance e acessibilidade.",
-    href: "#",
+    href: "https://github.com/caiogn-dev/mercado-livre-afl-django",
   },
   {
     id: "proj-3",
-    title: "Projeto C",
-    description: "Protótipo de dashboard com visual rico.",
-    href: "#",
+    title: "Pastita-Land",
+    description: "Landing Page moderna para a empresa Pastita, focada em conversão e captura de leads.",
+    href: "https://github.com/caiogn-dev/Pastita-Land",
   },
 ]
 
