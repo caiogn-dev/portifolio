@@ -3,6 +3,8 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { Provider } from "@/components/ui/provider";
 import NavBar from "@/components/NavBar";
+import { ColorModeScript }  from '@/components/ui/color-mode';
+import theme from "@/app/theme";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -26,6 +28,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning>
+      
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
@@ -37,10 +40,7 @@ export default function RootLayout({
             __html: `;(function(){try{var m=localStorage.getItem('chakra-color-mode');var mode=(m==='light'||m==='dark')?m:(window.matchMedia&&window.matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light');document.documentElement.classList.add('chakra-theme');document.documentElement.classList.remove('light','dark');document.documentElement.classList.add(mode);}catch(e){} })()`,
           }}
         />
-        
-        <Provider>
-          {children}
-        </Provider>
+        <Provider>{children}</Provider>
       </body>
     </html>
   );

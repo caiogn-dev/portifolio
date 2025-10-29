@@ -25,37 +25,70 @@ function applyHtmlClass(mode: ColorMode) {
   document.documentElement.classList.add(mode)
 }
 
+export function ColorModeScript({ initialColorMode = "system" }: { initialColorMode?: "light" | "dark" | "system" }) {
+  const scriptContent = `
+    (function() {
+      function getInitialColorMode() {
+        const persistedColorPreference = window.localStorage.getItem('chakra-color-mode');
+        const hasPersistedPreference = typeof persistedColorPreference === 'string';
+        if (hasPersistedPreference) {
+          return persistedColorPreference;
+        }
+        const mql = window.matchMedia('(prefers-color-scheme: dark)');
+        const hasMediaQueryPreference = typeof mql.matches === 'boolean';
+        if (hasMediaQueryPreference) {
+          return mql.matches ? 'dark' : 'light';
+        }
+        return '${initialColorMode === "system" ? "light" : initialColorMode}';
+      }
+      const colorMode = getInitialColorMode();
+      const root = document.documentElement;
+      root.classList.add("chakra-theme");
+      root.classList.add(colorMode);
+      root.style.setProperty('--chakra-ui-color-mode', colorMode);
+    })();
+  `;
+  return <script dangerouslySetInnerHTML={{ __html: scriptContent }} />;
+}
+
 export function ColorModeProvider({ children }: React.PropsWithChildren<{}>) {
-  const [colorMode, setColorModeState] = React.useState<ColorMode>(() => {
-    try {
-      const stored = localStorage.getItem("chakra-color-mode") as ColorMode | null
-      if (stored === "light" || stored === "dark") return stored
-    } catch (e) {
-      // ignore
-    }
-    // default to system preference
-    if (typeof window !== "undefined" && window.matchMedia) {
-      return window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light"
-    }
-    return "light"
-  })
+  const [colorMode, setColorModeState] = React.useState<ColorMode | undefined>(undefined);
 
   React.useEffect(() => {
+    const stored = localStorage.getItem("chakra-color-mode") as ColorMode | null;
+    let mode: ColorMode;
+    if (stored === "light" || stored === "dark") {
+      mode = stored;
+    } else if (window.matchMedia("(prefers-color-scheme: dark)").matches) {
+      mode = "dark";
+    } else {
+      mode = "light";
+    }
+    setColorModeState(mode);
+    applyHtmlClass(mode);
+  }, []);
+
+  const setColorMode = React.useCallback((mode: ColorMode) => {
+    setColorModeState(mode);
     try {
-      localStorage.setItem("chakra-color-mode", colorMode)
+      localStorage.setItem("chakra-color-mode", mode);
     } catch (e) {
       // ignore
     }
-    applyHtmlClass(colorMode)
-  }, [colorMode])
-
-  const setColorMode = React.useCallback((mode: ColorMode) => {
-    setColorModeState(mode)
-  }, [])
+    applyHtmlClass(mode);
+  }, []);
 
   const toggleColorMode = React.useCallback(() => {
-    setColorModeState((m) => (m === "dark" ? "light" : "dark"))
-  }, [])
+    setColorModeState((prev) => {
+      const next = prev === "dark" ? "light" : "dark";
+      setColorMode(next);
+      return next;
+    });
+  }, [setColorMode]);
+
+  if (colorMode === undefined) {
+    return null; // Or a loading placeholder to avoid mismatch
+  }
 
   return (
     <ColorModeContext.Provider value={{ colorMode, setColorMode, toggleColorMode }}>
@@ -87,6 +120,7 @@ export const ColorModeButton = React.forwardRef<HTMLButtonElement, ColorModeButt
     const { toggleColorMode } = useColorMode()
     return (
       <IconButton
+        suppressHydrationWarning
         onClick={toggleColorMode}
         variant="ghost"
         aria-label="Toggle color mode"
