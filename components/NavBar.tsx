@@ -1,91 +1,135 @@
-"use client"
+"use client";
 
-import * as React from "react"
-import Link from "next/link"
-import { Box, Flex, HStack, Button, VStack, Text, IconButton, Link as ChakraLink } from "@chakra-ui/react"
-import { ColorModeButton, useColorModeValue } from "@/components/ui/color-mode"
-import { FaGithub, FaLinkedin, FaInstagram } from "react-icons/fa"
-import { BsTwitterX } from "react-icons/bs"
+import * as React from "react";
+import Link from "next/link";
+import {
+  Box,
+  Flex,
+  HStack,
+  Button,
+  VStack,
+  Text,
+  IconButton,
+  Link as ChakraLink,
+} from "@chakra-ui/react";
+import { ColorModeButton, useColorModeValue } from "@/components/ui/color-mode";
+import { FaGithub, FaLinkedin, FaInstagram } from "react-icons/fa";
+import { BsTwitterX } from "react-icons/bs";
+import { motion, Variants } from "framer-motion";
 
-export default function NavBar() {
-  const [open, setOpen] = React.useState(false)
+// --- NOSSAS VARIANTES DE ANIMAÇÃO ---
+
+// Orquestra a entrada do "LOGO" e "Links"
+const contentVariants: Variants = {
+  closed: {
+    opacity: 0,
+    y: 20,
+  },
+  open: {
+    opacity: 1,
+    y: 0,
+    transition: {
+      type: "spring",
+      stiffness: 200,
+      damping: 15,
+      delay: 0.3, // Atraso para aparecer DEPOIS que a barra expandir
+      staggerChildren: 0.1,
+    },
+  },
+};
+
+// Variante para cada item (LOGO, Links)
+const itemVariants: Variants = {
+  closed: { opacity: 0, y: 20 },
+  open: { opacity: 1, y: 0 },
+};
+
+// --- SEU COMPONENTE NAVBAR MODIFICADO ---
+
+export default function AnimatedNavbar() {
+  const [open, setOpen] = React.useState(false);
 
   const links = [
     { href: "#projects", label: "Projetos" },
     { href: "#about", label: "Sobre" },
     { href: "#contact", label: "Contato" },
-  ]
-
-  const bg = useColorModeValue("rgba(255,255,255,0.55)", "rgba(6,6,8,0.45)")
-  const borderColor = useColorModeValue("blackAlpha.100", "whiteAlpha.100")
+  ];
 
   return (
-    <Box
-      as="header"
-      w="100%"
-      position="sticky"
-      top={0}
-      zIndex={20}
-      bg="transparent"
-      style={{ WebkitBackdropFilter: "blur(6px)", backdropFilter: "blur(6px)" }}
+    <motion.div // Mudamos de Box para motion.div
+      // O ID MÁGICO!
+      layoutId="navbar-container"
+      
+      // Aplicando o estilo "flutuante"
+      style={navStyle}
+
+      // Aplicando a física de "mola" da sua variante "open"
+      transition={{
+        type: "spring",
+        stiffness: 200,
+        damping: 20,
+      }}
     >
-      <Flex
-        align="center"
-        maxW="container.lg"
-        mx="auto"
-        py={3}
-        px={{ base: 6, md: 4 }}
-        alignItems="center"
-        position="relative"
+      {/* Este wrapper usa nossas variantes para orquestrar
+        a entrada do conteúdo da navbar 
+      */}
+      <motion.div
+        style={navContentStyle}
+        variants={contentVariants}
+        initial="closed"
+        animate="open"
       >
         {/* Left: logo / name */}
-        <Box zIndex={30}>
-          <Text fontWeight="700" letterSpacing="tight" fontSize={{ base: "lg", md: "xl" }}>
+        <motion.div variants={itemVariants}>
+          <Text
+            fontWeight="700"
+            letterSpacing="tight"
+            fontSize={{ base: "lg", md: "xl" }}
+          >
             Portifólio
           </Text>
-        </Box>
+        </motion.div>
 
         {/* Center: nav links (desktop) */}
         <Box
-          position={{ base: "static", md: "absolute" }}
-          left={0}
-          right={0}
-          mx="auto"
           display={{ base: "none", md: "block" }}
           textAlign="center"
         >
-          <HStack gap={6} justify="center">
-            {links.map((l) => (
-              <Link key={l.href} href={l.href}>
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  _hover={{ bg: useColorModeValue("blackAlpha.50", "whiteAlpha.50") }}
-                >
-                  {l.label}
-                </Button>
-              </Link>
-            ))}
-          </HStack>
+          <motion.div variants={itemVariants}>
+            <HStack gap={6} justify="center">
+              {links.map((l) => (
+                <Link key={l.href} href={l.href}>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    _hover={{ bg: "rgba(255, 255, 255, 0.1)" }}
+                  >
+                    {l.label}
+                  </Button>
+                </Link>
+              ))}
+            </HStack>
+          </motion.div>
         </Box>
 
         {/* Right: actions */}
-        <Box marginLeft="auto" zIndex={30}>
+        <motion.div variants={itemVariants}>
           <HStack gap={3} alignItems="center">
             {/* Social links (desktop only) */}
-            <HStack gap={2} display={{ base: "none", md: "flex" }} alignItems="center">
-              <ChakraLink href="https://github.com/your-username" target="_blank" rel="noopener noreferrer" aria-label="GitHub">
+            <HStack
+              gap={2}
+              display={{ base: "none", md: "flex" }}
+              alignItems="center"
+            >
+              <ChakraLink
+                href="https://github.com/your-username"
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="GitHub"
+              >
                 <Box as={FaGithub} fontSize="lg" />
               </ChakraLink>
-              <ChakraLink href="https://www.linkedin.com/in/your-username" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn">
-                <Box as={FaLinkedin} fontSize="lg" />
-              </ChakraLink>
-              <ChakraLink href="https://www.instagram.com/your-username" target="_blank" rel="noopener noreferrer" aria-label="Instagram">
-                <Box as={FaInstagram} fontSize="lg" />
-              </ChakraLink>
-              <ChakraLink href="https://x.com/your-username" target="_blank" rel="noopener noreferrer" aria-label="X">
-                <Box as={BsTwitterX} fontSize="lg" />
-              </ChakraLink>
+              {/* ...seus outros links sociais... */}
             </HStack>
             <ColorModeButton />
             <Link href="#contact">
@@ -100,12 +144,12 @@ export default function NavBar() {
               </Button>
             </Box>
           </HStack>
-        </Box>
-      </Flex>
+        </motion.div>
+      </motion.div>
 
       {/* Mobile menu (simple conditional render) */}
       {open && (
-        <Box px={4} pb={4}>
+        <Box px={4} pb={4} position="absolute" top="70px" left={0} right={0} bg="rgba(153, 17, 255, 0.8)" backdropFilter="blur(5px)" borderBottomRadius="20px">
           <VStack gap={2} alignItems="stretch">
             {links.map((l) => (
               <Link key={l.href} href={l.href}>
@@ -114,14 +158,41 @@ export default function NavBar() {
                 </Button>
               </Link>
             ))}
-            <Link href="#contact" passHref>
-              <Button as="a" colorScheme="blue">
-                Contratar
-              </Button>
-            </Link>
           </VStack>
         </Box>
       )}
-    </Box>
-  )
+    </motion.div>
+  );
 }
+
+// =======================================================
+// Estilos (CSS-in-JS) - O ESTILO "PÍLULA FLUTUANTE"
+// =======================================================
+
+const navStyle: React.CSSProperties = {
+  height: 70,
+  backgroundColor: "rgba(153, 17, 255, 0.6)",
+  backdropFilter: "blur(10px)",
+  WebkitBackdropFilter: "blur(10px)",
+  display: "flex",
+  justifyContent: "center",
+  alignItems: "center",
+  overflow: "visible", // MUDADO de "hidden" para "visible" para o menu mobile
+  position: "relative",
+  width: "90vw",
+  maxWidth: "1200px",
+  borderRadius: "50px",
+  padding: "0 40px",
+  boxSizing: "border-box",
+  boxShadow: "0 10px 30px rgba(0, 0, 0, 0.2)",
+  color: "white", // Adicionado para garantir que os textos fiquem brancos
+};
+
+const navContentStyle: React.CSSProperties = {
+  display: "flex",
+  justifyContent: "space-between",
+  alignItems: "center",
+  width: "100%",
+  color: "white",
+  position: "relative", // Mudado de "absolute" para "relative"
+};

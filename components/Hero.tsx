@@ -11,12 +11,12 @@ import {
 import { useColorModeValue } from "@/components/ui/color-mode";
 
 // --- Motion Components ---
-const MotionDiv = motion(chakra.div);
-const MotionFigure = motion(chakra.figure);
-const MotionImg = motion(chakra.img);
-const MotionH1 = motion(chakra.h1);
-const MotionP = motion(chakra.p);
-const MotionButton = motion(Button);
+const MotionDiv = motion.create(chakra.div);
+const MotionFigure = motion.create(chakra.figure);
+const MotionImg = motion.create(chakra.img);
+const MotionH1 = motion.create(chakra.h1);
+const MotionP = motion.create(chakra.p);
+const MotionButton = motion.create(Button);
 
 // --- Variantes de animação ---
 const containerVariants = {
