@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useRef } from 'react';
 import Link from 'next/link';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
@@ -17,12 +17,8 @@ import {
   Badge,
   Input,
   InputGroup,
-  Select,
   useBreakpointValue,
-  Avatar,
   Separator,
-  Tag,
-  TagLabel,
   Wrap,
   WrapItem,
 } from '@chakra-ui/react';
@@ -35,6 +31,8 @@ import {
   FaArrowRight,
 } from 'react-icons/fa';
 import { useColorModeValue } from '@/components/ui/color-mode';
+import { Tag } from '@/components/ui/tag';
+import { Avatar } from '@/components/ui/avatar';
 import { blogPosts, blogCategories } from '@/lib/data/personal';
 import { useLanguage } from '@/lib/context/AppContext';
 import { useIntersectionObserver, useDebounce } from '@/lib/hooks';
@@ -80,14 +78,13 @@ const BlogPostCard: React.FC<{
   const readingTime = calculateReadingTime(post.content);
 
   return (
-    <MotionGridItem
-      variants={cardVariants}
-      whileHover="hover"
-      initial="rest"
-      animate="rest"
-      as={GridItem}
-      colSpan={featured ? { base: 1, md: 2 } : 1}
-    >
+    <GridItem colSpan={featured ? { base: 1, md: 2 } : 1}>
+      <MotionBox
+        variants={cardVariants}
+        whileHover="hover"
+        initial="rest"
+        animate="rest"
+      >
       <MotionBox
         as={Box}
         bg={cardBg}
@@ -156,16 +153,16 @@ const BlogPostCard: React.FC<{
         </Box>
 
         {/* Conteúdo */}
-        <VStack align="stretch" p={6} spacing={4}>
+        <VStack align="stretch" p={6} gap={4}>
           {/* Meta */}
           <HStack justify="space-between" fontSize="sm" color="neutral.500">
-            <HStack spacing={4}>
-              <HStack spacing={1}>
+            <HStack gap={4}>
+              <HStack gap={1}>
                 <FaCalendar />
-                <Text>{formatDate(post.publishedAt, language)}</Text>
+                <Text>{formatDate(post.publishedAt)}</Text>
               </HStack>
 
-              <HStack spacing={1}>
+              <HStack gap={1}>
                 <FaClock />
                 <Text>
                   {readingTime}{' '}
@@ -174,13 +171,13 @@ const BlogPostCard: React.FC<{
               </HStack>
             </HStack>
 
-            <HStack spacing={3}>
-              <HStack spacing={1}>
+            <HStack gap={3}>
+              <HStack gap={1}>
                 <FaEye />
                 <Text>{post.views}</Text>
               </HStack>
 
-              <HStack spacing={1}>
+              <HStack gap={1}>
                 <FaHeart />
                 <Text>{post.likes}</Text>
               </HStack>
@@ -193,7 +190,7 @@ const BlogPostCard: React.FC<{
             fontWeight="bold"
             color="neutral.800"
             _dark={{ color: 'neutral.100' }}
-            noOfLines={2}
+            lineClamp={2}
             lineHeight="shorter"
           >
             {post.title}
@@ -204,7 +201,7 @@ const BlogPostCard: React.FC<{
             fontSize="sm"
             color="neutral.600"
             _dark={{ color: 'neutral.400' }}
-            noOfLines={featured ? 4 : 3}
+            lineClamp={featured ? 4 : 3}
             lineHeight="relaxed"
           >
             {post.excerpt}
@@ -212,20 +209,18 @@ const BlogPostCard: React.FC<{
 
           {/* Tags */}
           <Box>
-            <Wrap spacing={2}>
+            <Wrap gap={2}>
               {post.tags.slice(0, featured ? 5 : 3).map((tag) => (
                 <WrapItem key={tag}>
-                  <Tag size="sm" variant="subtle" colorScheme="primary">
-                    <TagLabel>{tag}</TagLabel>
+                  <Tag size="sm" variant="subtle" colorPalette="primary">
+                    {tag}
                   </Tag>
                 </WrapItem>
               ))}
               {post.tags.length > (featured ? 5 : 3) && (
                 <WrapItem>
-                  <Tag size="sm" variant="subtle" colorScheme="gray">
-                    <TagLabel>
-                      +{post.tags.length - (featured ? 5 : 3)}
-                    </TagLabel>
+                  <Tag size="sm" variant="subtle" colorPalette="gray">
+                    +{post.tags.length - (featured ? 5 : 3)}
                   </Tag>
                 </WrapItem>
               )}
@@ -236,11 +231,11 @@ const BlogPostCard: React.FC<{
 
           {/* Autor / Ler mais */}
           <HStack justify="space-between" align="center">
-            <HStack spacing={3}>
-              <Avatar size="sm" name={post.author} src="/images/profile.jpg" />
-              <VStack align="flex-start" spacing={0}>
+            <HStack gap={3}>
+              <Avatar size="sm" name={post.author.name} src={post.author.avatar} />
+              <VStack align="flex-start" gap={0}>
                 <Text fontSize="sm" fontWeight="medium">
-                  {post.author}
+                  {post.author.name}
                 </Text>
                 <Text fontSize="xs" color="neutral.500">
                   {language === 'en' ? 'Author' : 'Autor'}
@@ -248,22 +243,23 @@ const BlogPostCard: React.FC<{
               </VStack>
             </HStack>
 
-            <Button
-              as={Link}
-              href={`/blog/${post.slug}`}
-              variant="ghost"
-              colorScheme="primary"
-              size="sm"
-              rightIcon={<FaArrowRight />}
-              _hover={{ transform: 'translateX(4px)' }}
-              transition="all 0.2s ease-in-out"
-            >
-              {language === 'en' ? 'Read More' : 'Ler Mais'}
-            </Button>
+            <Link href={`/blog/${post.slug}`}>
+              <Button
+                variant="ghost"
+                colorPalette="primary"
+                size="sm"
+                _hover={{ transform: 'translateX(4px)' }}
+                transition="all 0.2s ease-in-out"
+              >
+                {language === 'en' ? 'Read More' : 'Ler Mais'}
+                <FaArrowRight />
+              </Button>
+            </Link>
           </HStack>
         </VStack>
       </MotionBox>
-    </MotionGridItem>
+      </MotionBox>
+    </GridItem>
   );
 };
 
@@ -331,34 +327,48 @@ const BlogFilters: React.FC<{
         {/* Categoria */}
         <motion.div variants={fieldVariants}>
           <GridItem>
-            <Select
+            <select
               value={selectedCategory}
               onChange={(e) => onCategoryChange(e.target.value)}
-              bg={inputBg}
-              border="1px solid"
-              borderColor={inputBorder}
+              style={{
+                background: inputBg === 'white' ? 'white' : '#2D3748',
+                border: '1px solid',
+                borderColor: inputBorder === 'neutral.200' ? '#E2E8F0' : '#4A5568',
+                borderRadius: '6px',
+                padding: '8px 12px',
+                width: '100%',
+                fontSize: '14px',
+                color: inputBg === 'white' ? 'black' : 'white'
+              }}
             >
               <option value="">
                 {language === 'en' ? 'All Categories' : 'Todas Categorias'}
               </option>
               {blogCategories.map((category) => (
                 <option key={category.id} value={category.id}>
-                  {language === 'en' ? category.nameEn : category.namePt}
+                  {category.name}
                 </option>
               ))}
-            </Select>
+            </select>
           </GridItem>
         </motion.div>
 
         {/* Tag */}
         <motion.div variants={fieldVariants}>
           <GridItem>
-            <Select
+            <select
               value={selectedTag}
               onChange={(e) => onTagChange(e.target.value)}
-              bg={inputBg}
-              border="1px solid"
-              borderColor={inputBorder}
+              style={{
+                background: inputBg === 'white' ? 'white' : '#2D3748',
+                border: '1px solid',
+                borderColor: inputBorder === 'neutral.200' ? '#E2E8F0' : '#4A5568',
+                borderRadius: '6px',
+                padding: '8px 12px',
+                width: '100%',
+                fontSize: '14px',
+                color: inputBg === 'white' ? 'black' : 'white'
+              }}
             >
               <option value="">{language === 'en' ? 'All Tags' : 'Todas Tags'}</option>
               {allTags.map((tag) => (
@@ -366,19 +376,26 @@ const BlogFilters: React.FC<{
                   {tag}
                 </option>
               ))}
-            </Select>
+            </select>
           </GridItem>
         </motion.div>
 
         {/* Ordenação */}
         <motion.div variants={fieldVariants}>
           <GridItem>
-            <Select
+            <select
               value={sortBy}
               onChange={(e) => onSortChange(e.target.value)}
-              bg={inputBg}
-              border="1px solid"
-              borderColor={inputBorder}
+              style={{
+                background: inputBg === 'white' ? 'white' : '#2D3748',
+                border: '1px solid',
+                borderColor: inputBorder === 'neutral.200' ? '#E2E8F0' : '#4A5568',
+                borderRadius: '6px',
+                padding: '8px 12px',
+                width: '100%',
+                fontSize: '14px',
+                color: inputBg === 'white' ? 'black' : 'white'
+              }}
             >
               <option value="newest">
                 {language === 'en' ? 'Newest First' : 'Mais Recentes'}
@@ -392,7 +409,7 @@ const BlogFilters: React.FC<{
               <option value="liked">
                 {language === 'en' ? 'Most Liked' : 'Mais Curtidos'}
               </option>
-            </Select>
+            </select>
           </GridItem>
         </motion.div>
       </Grid>
@@ -428,7 +445,7 @@ const BlogStats: React.FC = () => {
         {stats.map((stat, index) => (
           <motion.div key={index} variants={statVariants}>
             <GridItem textAlign="center">
-              <VStack spacing={1}>
+              <VStack gap={1}>
                 <Text
                   fontSize="2xl"
                   fontWeight="bold"
@@ -456,7 +473,8 @@ const EnhancedBlogSystem: React.FC = () => {
   const [selectedTag, setSelectedTag] = useState('');
   const [sortBy, setSortBy] = useState('newest');
   const { language } = useLanguage();
-  const { ref, isIntersecting } = useIntersectionObserver({ threshold: 0.1 });
+  const ref = useRef<HTMLDivElement>(null);
+  const { isIntersecting } = useIntersectionObserver(ref as React.RefObject<Element>, { threshold: 0.1 });
 
   const debouncedSearchTerm = useDebounce(searchTerm, 300);
 
@@ -467,7 +485,7 @@ const EnhancedBlogSystem: React.FC = () => {
   });
 
   const filteredAndSortedPosts = useMemo(() => {
-    let filtered = blogPosts.filter((post) => {
+    const filtered = blogPosts.filter((post) => {
       const q = debouncedSearchTerm.toLowerCase();
       const matchesSearch =
         !q ||
@@ -516,7 +534,7 @@ const EnhancedBlogSystem: React.FC = () => {
         >
           {/* Cabeçalho */}
           <motion.div variants={titleVariants}>
-            <VStack spacing={6} textAlign="center" mb={16}>
+            <VStack gap={6} textAlign="center" mb={16}>
               <Text
                 fontSize="sm"
                 fontWeight="semibold"
@@ -589,7 +607,7 @@ const EnhancedBlogSystem: React.FC = () => {
                 animate="visible"
                 exit="hidden"
                 as={Grid}
-                templateColumns={gridColumns}
+                gridTemplateColumns={gridColumns}
                 gap={8}
               >
                 {featuredPost && (
@@ -602,7 +620,7 @@ const EnhancedBlogSystem: React.FC = () => {
               </MotionGrid>
             ) : (
               <motion.div variants={titleVariants}>
-                <VStack spacing={6} py={16} textAlign="center">
+                <VStack gap={6} py={16} textAlign="center">
                   <Text fontSize="xl" color="neutral.600" _dark={{ color: 'neutral.400' }}>
                     {language === 'en'
                       ? 'No articles found matching your criteria.'
@@ -628,23 +646,23 @@ const EnhancedBlogSystem: React.FC = () => {
 
           {/* CTA */}
           <motion.div variants={titleVariants}>
-            <VStack spacing={6} textAlign="center" mt={16}>
+            <VStack gap={6} textAlign="center" mt={16}>
               <Text fontSize="lg" color="neutral.600" _dark={{ color: 'neutral.400' }}>
                 {language === 'en'
                   ? 'Want to stay updated with my latest articles?'
                   : 'Quer ficar atualizado com meus últimos artigos?'}
               </Text>
 
-              <Button
-                variant="gradient"
-                size="lg"
-                as="a"
-                href="#contact"
-                _hover={{ transform: 'translateY(-2px)', shadow: 'xl' }}
-                transition="all 0.3s ease-in-out"
-              >
-                {language === 'en' ? 'Subscribe to Newsletter' : 'Inscrever-se na Newsletter'}
-              </Button>
+              <Link href="#contact">
+                <Button
+                  variant="solid"
+                  size="lg"
+                  _hover={{ transform: 'translateY(-2px)', shadow: 'xl' }}
+                  transition="all 0.3s ease-in-out"
+                >
+                  {language === 'en' ? 'Subscribe to Newsletter' : 'Inscrever-se na Newsletter'}
+                </Button>
+              </Link>
             </VStack>
           </motion.div>
         </MotionBox>

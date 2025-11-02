@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useRef } from 'react';
+import React, { useState } from 'react';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
 import {
@@ -13,8 +13,9 @@ import {
   Grid,
   GridItem,
   Input,
-  InputGroup,
   Textarea,
+  Select,
+  Checkbox,
   useBreakpointValue,
   IconButton,
 } from '@chakra-ui/react';
@@ -72,7 +73,7 @@ interface ContactFormData {
 const ContactInfoCard: React.FC<{
   icon: React.ElementType;
   title: string;
-  value: string | undefined;
+  value: string;
   href?: string;
   index: number;
 }> = ({ icon: IconComponent, title, value, href, index }) => {
@@ -128,7 +129,7 @@ const ContactInfoCard: React.FC<{
           color="neutral.600"
           _dark={{ color: 'neutral.400' }}
         >
-          {value || 'Not available'}
+          {value}
         </Text>
       </VStack>
     </MotionBox>
@@ -437,74 +438,73 @@ const ContactForm: React.FC = () => {
                   required
                   errorText={errors.name}
                 >
-                  <InputGroup startElement={<FaUser />}>
-                    <Input
-                      name="name"
-                      value={values.name}
-                      onChange={handleChange}
-                      onBlur={handleBlur}
-                      placeholder={language === 'en' ? 'John Doe' : 'João Silva'}
-                    />
-                  </InputGroup>
+                  <Input
+                    name="name"
+                    value={values.name}
+                    onChange={handleChange}
+                    onBlur={handleBlur}
+                    placeholder={language === 'en' ? 'John Doe' : 'João Silva'}
+                    leftElement={<FaUser />}
+                  />
                 </Field>
               </GridItem>
             </motion.div>
 
             <motion.div variants={fieldVariants}>
               <GridItem>
-                <Box>
-                  <Text fontSize="sm" fontWeight="medium" mb={2}>{language === 'en' ? 'Email Address' : 'Endereço de Email'}
-                  </Text>
-                  <InputGroup startElement={<FaEnvelope />}>
-                    <Input
-                      name="email"
-                      type="email"
-                      value={values.email}
-                      onChange={handleChange}
-                      onBlur={handleBlur}
-                      placeholder={language === 'en' ? 'john@example.com' : 'joao@exemplo.com'}
-                    />
-                  </InputGroup>
-                  {errors.email && touched.email && (<Text color="red.500" fontSize="sm" mt={1}>{errors.email}</Text>)}
-                </Box>
+                <FormControl isInvalid={!!(errors.email && touched.email)} isRequired>
+                  <FormLabel>
+                    {language === 'en' ? 'Email Address' : 'Endereço de Email'}
+                  </FormLabel>
+                  <Input
+                    name="email"
+                    type="email"
+                    value={values.email}
+                    onChange={handleChange}
+                    onBlur={handleBlur}
+                    placeholder={language === 'en' ? 'john@example.com' : 'joao@exemplo.com'}
+                    leftElement={<FaEnvelope />}
+                  />
+                  <FormErrorMessage>{errors.email}</FormErrorMessage>
+                </FormControl>
               </GridItem>
             </motion.div>
 
             <motion.div variants={fieldVariants}>
               <GridItem>
-                <Box>
-                  <Text fontSize="sm" fontWeight="medium" mb={2}>{language === 'en' ? 'Phone Number' : 'Número de Telefone'}
-                  </Text>
-                  <InputGroup startElement={<FaPhone />}>
-                    <Input
-                      name="phone"
-                      type="tel"
-                      value={values.phone}
-                      onChange={handleChange}
-                      onBlur={handleBlur}
-                      placeholder={language === 'en' ? '+1 (555) 123-4567' : '+55 (11) 99999-9999'}
-                    />
-                  </InputGroup>
-                  {errors.phone && touched.phone && (<Text color="red.500" fontSize="sm" mt={1}>{errors.phone}</Text>)}
-                </Box>
+                <FormControl isInvalid={!!(errors.phone && touched.phone)}>
+                  <FormLabel>
+                    {language === 'en' ? 'Phone Number' : 'Número de Telefone'}
+                  </FormLabel>
+                  <Input
+                    name="phone"
+                    type="tel"
+                    value={values.phone}
+                    onChange={handleChange}
+                    onBlur={handleBlur}
+                    placeholder={language === 'en' ? '+1 (555) 123-4567' : '+55 (11) 99999-9999'}
+                    leftElement={<FaPhone />}
+                  />
+                  <FormErrorMessage>{errors.phone}</FormErrorMessage>
+                </FormControl>
               </GridItem>
             </motion.div>
 
             <motion.div variants={fieldVariants}>
               <GridItem>
-                <Box>
-                  <Text fontSize="sm" fontWeight="medium" mb={2}>{language === 'en' ? 'Company' : 'Empresa'}
-                  </Text>
-                  <InputGroup startElement={<FaBuilding />}>
-                    <Input
-                      name="company"
-                      value={values.company}
-                      onChange={handleChange}
-                      onBlur={handleBlur}
-                      placeholder={language === 'en' ? 'Your Company' : 'Sua Empresa'}
-                    />
-                  </InputGroup>
-                </Box>
+                <FormControl>
+                  <FormLabel>
+                    {language === 'en' ? 'Company' : 'Empresa'}
+                  </FormLabel>
+                  <Input
+                    name="company"
+                    value={values.company}
+                    onChange={handleChange}
+                    onBlur={handleBlur}
+                    placeholder={language === 'en' ? 'Your Company' : 'Sua Empresa'}
+                    leftElement={<FaBuilding />}
+                  />
+                </FormControl>
               </GridItem>
             </motion.div>
           </Grid>
@@ -513,62 +513,51 @@ const ContactForm: React.FC = () => {
           <Grid templateColumns={{ base: '1fr', md: 'repeat(3, 1fr)' }} gap={4}>
             <motion.div variants={fieldVariants}>
               <GridItem>
-                <Box>
-                  <Text fontSize="sm" fontWeight="medium" mb={2}>{language === 'en' ? 'Project Type' : 'Tipo de Projeto'}
-                  </Text>
-                  <select
+                <FormControl>
+                  <FormLabel>
+                    {language === 'en' ? 'Project Type' : 'Tipo de Projeto'}
+                  </FormLabel>
+                  <Select
                     name="projectType"
                     value={values.projectType}
                     onChange={handleChange}
-                    style={{
-                      width: '100%',
-                      padding: '8px 12px',
-                      border: '1px solid #e2e8f0',
-                      borderRadius: '6px',
-                      fontSize: '14px',
-                      backgroundColor: 'white'
-                    }}
+                    placeholder={language === 'en' ? 'Select type' : 'Selecione o tipo'}
                   >
-                    <option value="">{language === 'en' ? 'Select type' : 'Selecione o tipo'}</option>
                     <option value="web-app">
                       {language === 'en' ? 'Web Application' : 'Aplicação Web'}
                     </option>
                     <option value="mobile-app">
                       {language === 'en' ? 'Mobile App' : 'App Mobile'}
                     </option>
+                    <option value="website">
+                      {language === 'en' ? 'Website' : 'Site'}
+                    </option>
                     <option value="ecommerce">
                       {language === 'en' ? 'E-commerce' : 'E-commerce'}
                     </option>
-                    <option value="landing">
-                      {language === 'en' ? 'Landing Page' : 'Landing Page'}
+                    <option value="consulting">
+                      {language === 'en' ? 'Consulting' : 'Consultoria'}
                     </option>
                     <option value="other">
                       {language === 'en' ? 'Other' : 'Outro'}
                     </option>
-                  </select>
-                </Box>
+                  </Select>
+                </FormControl>
               </GridItem>
             </motion.div>
 
             <motion.div variants={fieldVariants}>
               <GridItem>
-                <Box>
-                  <Text fontSize="sm" fontWeight="medium" mb={2}>{language === 'en' ? 'Budget Range' : 'Faixa de Orçamento'}
-                  </Text>
-                  <select
+                <FormControl>
+                  <FormLabel>
+                    {language === 'en' ? 'Budget Range' : 'Faixa de Orçamento'}
+                  </FormLabel>
+                  <Select
                     name="budget"
                     value={values.budget}
                     onChange={handleChange}
-                    style={{
-                      width: '100%',
-                      padding: '8px 12px',
-                      border: '1px solid #e2e8f0',
-                      borderRadius: '6px',
-                      fontSize: '14px',
-                      backgroundColor: 'white'
-                    }}
+                    placeholder={language === 'en' ? 'Select budget' : 'Selecione orçamento'}
                   >
-                    <option value="">{language === 'en' ? 'Select budget' : 'Selecione orçamento'}</option>
                     <option value="under-5k">
                       {language === 'en' ? 'Under $5,000' : 'Abaixo de R$ 25.000'}
                     </option>
@@ -581,30 +570,23 @@ const ContactForm: React.FC = () => {
                     <option value="over-50k">
                       {language === 'en' ? 'Over $50,000' : 'Acima de R$ 250.000'}
                     </option>
-                  </select>
-                </Box>
+                  </Select>
+                </FormControl>
               </GridItem>
             </motion.div>
 
             <motion.div variants={fieldVariants}>
               <GridItem>
-                <Box>
-                  <Text fontSize="sm" fontWeight="medium" mb={2}>{language === 'en' ? 'Timeline' : 'Prazo'}
-                  </Text>
-                  <select
+                <FormControl>
+                  <FormLabel>
+                    {language === 'en' ? 'Timeline' : 'Prazo'}
+                  </FormLabel>
+                  <Select
                     name="timeline"
                     value={values.timeline}
                     onChange={handleChange}
-                    style={{
-                      width: '100%',
-                      padding: '8px 12px',
-                      border: '1px solid #e2e8f0',
-                      borderRadius: '6px',
-                      fontSize: '14px',
-                      backgroundColor: 'white'
-                    }}
+                    placeholder={language === 'en' ? 'Select timeline' : 'Selecione prazo'}
                   >
-                    <option value="">{language === 'en' ? 'Select timeline' : 'Selecione prazo'}</option>
                     <option value="asap">
                       {language === 'en' ? 'ASAP' : 'O mais rápido possível'}
                     </option>
@@ -614,20 +596,24 @@ const ContactForm: React.FC = () => {
                     <option value="2-3-months">
                       {language === 'en' ? '2-3 Months' : '2-3 Meses'}
                     </option>
-                    <option value="3-plus-months">
-                      {language === 'en' ? '3+ Months' : '3+ Meses'}
+                    <option value="3-6-months">
+                      {language === 'en' ? '3-6 Months' : '3-6 Meses'}
                     </option>
-                  </select>
-                </Box>
+                    <option value="flexible">
+                      {language === 'en' ? 'Flexible' : 'Flexível'}
+                    </option>
+                  </Select>
+                </FormControl>
               </GridItem>
             </motion.div>
           </Grid>
 
           {/* Subject and Message */}
           <motion.div variants={fieldVariants}>
-            <Box>
-              <Text fontSize="sm" fontWeight="medium" mb={2}>{language === 'en' ? 'Subject' : 'Assunto'}
-              </Text>
+            <FormControl isInvalid={!!(errors.subject && touched.subject)} isRequired>
+              <FormLabel>
+                {language === 'en' ? 'Subject' : 'Assunto'}
+              </FormLabel>
               <Input
                 name="subject"
                 value={values.subject}
@@ -635,14 +621,15 @@ const ContactForm: React.FC = () => {
                 onBlur={handleBlur}
                 placeholder={language === 'en' ? 'Project inquiry' : 'Consulta sobre projeto'}
               />
-              {errors.subject && touched.subject && (<Text color="red.500" fontSize="sm" mt={1}>{errors.subject}</Text>)}
-            </Box>
+              <FormErrorMessage>{errors.subject}</FormErrorMessage>
+            </FormControl>
           </motion.div>
 
           <motion.div variants={fieldVariants}>
-            <Box>
-              <Text fontSize="sm" fontWeight="medium" mb={2}>{language === 'en' ? 'Message' : 'Mensagem'}
-              </Text>
+            <FormControl isInvalid={!!(errors.message && touched.message)} isRequired>
+              <FormLabel>
+                {language === 'en' ? 'Message' : 'Mensagem'}
+              </FormLabel>
               <Textarea
                 name="message"
                 value={values.message}
@@ -655,45 +642,43 @@ const ContactForm: React.FC = () => {
                 rows={6}
                 resize="vertical"
               />
-              {errors.message && touched.message && (<Text color="red.500" fontSize="sm" mt={1}>{errors.message}</Text>)}
-            </Box>
+              <FormErrorMessage>{errors.message}</FormErrorMessage>
+            </FormControl>
           </motion.div>
 
           {/* Newsletter Checkbox */}
           <motion.div variants={fieldVariants}>
-            <Box display="flex" alignItems="center" gap={2}>
-              <input
-                type="checkbox"
-                name="newsletter"
-                checked={values.newsletter}
-                onChange={handleChange}
-                style={{ marginRight: '8px' }}
-              />
+            <Checkbox
+              name="newsletter"
+              isChecked={values.newsletter}
+              onChange={handleChange}
+              colorScheme="primary"
+            >
               <Text fontSize="sm" color="neutral.600" _dark={{ color: 'neutral.400' }}>
                 {language === 'en' 
                   ? 'Subscribe to my newsletter for updates and tech insights'
                   : 'Inscreva-se na minha newsletter para atualizações e insights de tecnologia'
                 }
               </Text>
-            </Box>
+            </Checkbox>
           </motion.div>
 
           {/* Submit Button */}
           <motion.div variants={fieldVariants}>
             <Button
               type="submit"
-              variant="solid"
+              variant="gradient"
               size="lg"
               width="100%"
-              loading={isSubmitting}
+              isLoading={isSubmitting}
               loadingText={language === 'en' ? 'Sending...' : 'Enviando...'}
+              leftIcon={<FaPaperPlane />}
               _hover={{
                 transform: 'translateY(-2px)',
                 shadow: 'xl'
               }}
               transition="all 0.3s ease-in-out"
             >
-              <FaPaperPlane style={{ marginRight: '8px' }} />
               {language === 'en' ? 'Send Message' : 'Enviar Mensagem'}
             </Button>
           </motion.div>
@@ -706,8 +691,7 @@ const ContactForm: React.FC = () => {
 // Main component
 const EnhancedContactSystem: React.FC = () => {
   const { language } = useLanguage();
-  const ref = useRef<Element>(null);
-  const { isIntersecting } = useIntersectionObserver(ref, { threshold: 0.1 });
+  const { ref, isIntersecting } = useIntersectionObserver({ threshold: 0.1 });
   
   // Responsive grid columns
   const gridColumns = useBreakpointValue({ 

@@ -149,7 +149,7 @@ export function useScrollPosition() {
  * Hook for intersection observer
  */
 export function useIntersectionObserver(
-  elementRef: React.RefObject<Element>,
+  elementRef: React.RefObject<Element | null>,
   options?: IntersectionObserverInit
 ) {
   const [isIntersecting, setIsIntersecting] = useState(false);
@@ -472,6 +472,29 @@ export function useLoadingState() {
  * Hook for typewriter effect
  */
 export function useTypewriter(
+  text: string | string[],
+  options?: {
+    typeSpeed?: number;
+    deleteSpeed?: number;
+    delayBetweenWords?: number;
+  } | number,
+  delay?: number
+) {
+  // Handle legacy single string usage
+  if (typeof text === 'string' && typeof options === 'number') {
+    return useSimpleTypewriter(text, options, delay);
+  }
+
+  // Handle new array usage
+  if (Array.isArray(text)) {
+    return useMultiTypewriter(text, options as any);
+  }
+
+  // Handle single string with options
+  return useSimpleTypewriter(text, (options as any)?.typeSpeed || 100, delay);
+}
+
+function useSimpleTypewriter(
   text: string,
   speed: number = 100,
   delay: number = 0
@@ -500,6 +523,57 @@ export function useTypewriter(
 
     return () => clearTimeout(timeout);
   }, [text, speed, delay]);
+
+  return { displayText, isComplete };
+}
+
+function useMultiTypewriter(
+  texts: string[],
+  options: {
+    typeSpeed?: number;
+    deleteSpeed?: number;
+    delayBetweenWords?: number;
+  } = {}
+) {
+  const { typeSpeed = 100, deleteSpeed = 50, delayBetweenWords = 2000 } = options;
+  const [displayText, setDisplayText] = useState('');
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const [isTyping, setIsTyping] = useState(true);
+  const [isComplete, setIsComplete] = useState(false);
+
+  useEffect(() => {
+    if (texts.length === 0) return;
+
+    let timeout: NodeJS.Timeout;
+    const currentText = texts[currentIndex];
+
+    if (isTyping) {
+      // Typing phase
+      if (displayText.length < currentText.length) {
+        timeout = setTimeout(() => {
+          setDisplayText(currentText.slice(0, displayText.length + 1));
+        }, typeSpeed);
+      } else {
+        // Finished typing current word, wait then start deleting
+        timeout = setTimeout(() => {
+          setIsTyping(false);
+        }, delayBetweenWords);
+      }
+    } else {
+      // Deleting phase
+      if (displayText.length > 0) {
+        timeout = setTimeout(() => {
+          setDisplayText(displayText.slice(0, -1));
+        }, deleteSpeed);
+      } else {
+        // Finished deleting, move to next word
+        setCurrentIndex((prev) => (prev + 1) % texts.length);
+        setIsTyping(true);
+      }
+    }
+
+    return () => clearTimeout(timeout);
+  }, [displayText, currentIndex, isTyping, texts, typeSpeed, deleteSpeed, delayBetweenWords]);
 
   return { displayText, isComplete };
 }

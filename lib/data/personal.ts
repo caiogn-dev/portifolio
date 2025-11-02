@@ -519,6 +519,9 @@ export const blogPosts = [
     publishedAt: '2024-01-15',
     readingTime: 8,
     featured: true,
+    image: '/images/blog/react-scalable.jpg',
+    views: 1250,
+    likes: 89,
     author: {
       name: 'João Silva',
       avatar: '/images/avatar.jpg',
@@ -536,6 +539,9 @@ export const blogPosts = [
     publishedAt: '2024-01-10',
     readingTime: 6,
     featured: false,
+    image: '/images/blog/nextjs-14.jpg',
+    views: 890,
+    likes: 67,
     author: {
       name: 'João Silva',
       avatar: '/images/avatar.jpg',

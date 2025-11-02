@@ -43,3 +43,21 @@ html.dark {
   width: 100%;
   height: 100vh;
 }
+
+@keyframes blink {
+  0%, 50% { opacity: 1; }
+  51%, 100% { opacity: 0; }
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.cursor-blink {
+  animation: blink 1s infinite;
+}
+
+.spin-slow {
+  animation: spin 10s linear infinite;
+}

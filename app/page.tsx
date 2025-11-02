@@ -2,7 +2,6 @@
 
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Box } from "@chakra-ui/react";
 
 // --- ENHANCED COMPONENTS ---
 import WelcomeGate from "@/components/EntryAnimation/WelcomeGate";
@@ -14,7 +13,7 @@ import EnhancedHero from "@/components/Hero/EnhancedHero";
 import EnhancedTechShowcase from "@/components/Tech/EnhancedTechShowcase";
 import EnhancedProjectShowcase from "@/components/Projects/EnhancedProjectShowcase";
 import EnhancedBlogSystem from "@/components/Blog/EnhancedBlogSystem";
-import EnhancedContactSystem from "@/components/Contact/EnhancedContactSystem";
+// import EnhancedContactSystem from "@/components/Contact/EnhancedContactSystem";
 import Footer from "@/components/Footer";
 
 // Variantes para o fade-in do layout principal
@@ -29,19 +28,6 @@ const layoutVariants = {
   },
 };
 
-// Estilo para o wrapper da navbar (sticky e flutuante)
-const navWrapperStyle: React.CSSProperties = {
-  position: "sticky",
-  top: "20px",
-  zIndex: 100,
-  width: "100%",
-  display: "flex",
-  justifyContent: "center",
-};
-
-// ==========================================
-// SEU app/page.tsx
-// ==========================================
 export default function Page() {
   const [hasEntered, setHasEntered] = useState(false);
   const handleEnter = () => setHasEntered(true);
@@ -74,7 +60,7 @@ export default function Page() {
 
               <EnhancedBlogSystem />
 
-              <EnhancedContactSystem />
+              {/* <EnhancedContactSystem /> */}
 
               <AnimatedSection>
                 <Footer />

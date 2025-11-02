@@ -1,7 +1,7 @@
 'use client';
 
 import { motion, useInView } from 'framer-motion';
-import { ReactNode, useRef } from 'react';
+import React, { ReactNode, useRef } from 'react';
 import { getAnimationVariants, createSlideVariants, baseTransition } from '@/lib/utils/animations';
 import { AnimationProps } from '@/lib/types';
 
@@ -11,7 +11,7 @@ interface AnimatedSectionProps extends AnimationProps {
   id?: string;
   threshold?: number;
   triggerOnce?: boolean;
-  as?: keyof JSX.IntrinsicElements;
+  as?: keyof React.JSX.IntrinsicElements;
 }
 
 export default function AnimatedSection({ 
@@ -29,7 +29,7 @@ export default function AnimatedSection({
 }: AnimatedSectionProps) {
   const ref = useRef(null);
   const isInView = useInView(ref, { 
-    threshold,
+    amount: threshold,
     once: triggerOnce
   });
 

@@ -142,7 +142,7 @@ const StatsSection: React.FC = () => {
           return (
             <motion.div key={index} variants={statItemVariants}>
               <GridItem textAlign="center">
-                <VStack spacing={2}>
+                <VStack gap={2}>
                   <Box as={IconComponent} fontSize="2xl" color="primary.500" _dark={{ color: 'accent.300' }} />
                   <Text fontSize="2xl" fontWeight="bold" color="primary.600" _dark={{ color: 'accent.300' }}>
                     {stat.value}
@@ -241,14 +241,14 @@ const EnhancedHero: React.FC = () => {
           {/* Left */}
           <VStack
             align={{ base: 'center', lg: 'flex-start' }}
-            spacing={8}
+            gap={8}
             flex={1}
             textAlign={{ base: 'center', lg: 'left' }}
             maxW={{ base: 'full', lg: '600px' }}
           >
             {/* Greeting */}
             <motion.div variants={titleVariants}>
-              <HStack spacing={3} justify={{ base: 'center', lg: 'flex-start' }}>
+              <HStack gap={3} justify={{ base: 'center', lg: 'flex-start' }}>
                 <MotionBox
                   as={MdWavingHand}
                   fontSize="2xl"
@@ -293,13 +293,7 @@ const EnhancedHero: React.FC = () => {
                   h="1em"
                   bg="primary.500"
                   ml={1}
-                  animation="blink 1s infinite"
-                  sx={{
-                    '@keyframes blink': {
-                      '0%, 50%': { opacity: 1 },
-                      '51%, 100%': { opacity: 0 },
-                    },
-                  }}
+                  className="cursor-blink"
                 />
               </MotionText>
             </motion.div>
@@ -324,17 +318,18 @@ const EnhancedHero: React.FC = () => {
 
             {/* Actions */}
             <motion.div variants={buttonVariants}>
-              <HStack spacing={4} wrap="wrap" justify={{ base: 'center', lg: 'flex-start' }}>
+              <HStack gap={4} wrap="wrap" justify={{ base: 'center', lg: 'flex-start' }}>
                 <Link href="#contact">
                   <MotionButton
-                    variant="gradient"
+                    variant="solid"
+                    colorScheme="primary"
                     size="lg"
-                    rightIcon={<FaArrowRight />}
                     whileHover={{ scale: 1.05, y: -2 }}
                     whileTap={{ scale: 0.95 }}
                     _hover={{ shadow: 'xl' }}
                   >
                     {language === 'en' ? 'Get In Touch' : 'Entre em Contato'}
+                    <FaArrowRight style={{ marginLeft: '8px' }} />
                   </MotionButton>
                 </Link>
 
@@ -342,10 +337,10 @@ const EnhancedHero: React.FC = () => {
                   <MotionButton
                     variant="outline"
                     size="lg"
-                    leftIcon={<FaDownload />}
                     whileHover={{ scale: 1.05, y: -2 }}
                     whileTap={{ scale: 0.95 }}
                   >
+                    <FaDownload style={{ marginRight: '8px' }} />
                     {language === 'en' ? 'Download CV' : 'Baixar CV'}
                   </MotionButton>
                 </Link>
@@ -376,13 +371,7 @@ const EnhancedHero: React.FC = () => {
                   bgGradient="conic(from 0deg, primary.400, accent.400, primary.400)"
                   opacity={isDark ? 0.3 : 0.1}
                   filter="blur(20px)"
-                  animation="spin 10s linear infinite"
-                  sx={{
-                    '@keyframes spin': {
-                      '0%': { transform: 'rotate(0deg)' },
-                      '100%': { transform: 'rotate(360deg)' },
-                    },
-                  }}
+                  className="spin-slow"
                 />
 
                 {/* Image */}
@@ -397,7 +386,6 @@ const EnhancedHero: React.FC = () => {
                   borderColor="white"
                   _dark={{ borderColor: 'neutral.800' }}
                   shadow="2xl"
-                  fallbackSrc="https://via.placeholder.com/400x400/3B82F6/FFFFFF?text=Profile"
                 />
 
                 {/* Status */}
@@ -441,7 +429,7 @@ const EnhancedHero: React.FC = () => {
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 2, duration: 0.5 }}
       >
-        <VStack spacing={2}>
+        <VStack gap={2}>
           <Text fontSize="sm" color="neutral.500" _dark={{ color: 'neutral.400' }}>
             {language === 'en' ? 'Scroll to explore' : 'Role para explorar'}
           </Text>

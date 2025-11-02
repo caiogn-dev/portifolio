@@ -457,3 +457,72 @@ export const animationPresets = {
     whileTap: 'tap'
   }
 } as const;
+
+// Additional animation variants for tests
+export const slideVariants: Variants = {
+  hidden: {
+    opacity: 0,
+    x: -20,
+    transition: baseTransition
+  },
+  visible: {
+    opacity: 1,
+    x: 0,
+    transition: baseTransition
+  }
+};
+
+export const rotateVariants: Variants = {
+  hidden: {
+    opacity: 0,
+    rotate: -180,
+    transition: baseTransition
+  },
+  visible: {
+    opacity: 1,
+    rotate: 0,
+    transition: baseTransition
+  }
+};
+
+export const buttonHoverVariants: Variants = {
+  rest: {
+    scale: 1,
+    transition: baseTransition
+  },
+  hover: {
+    scale: 1.05,
+    transition: baseTransition
+  },
+  tap: {
+    scale: 0.95,
+    transition: { ...baseTransition, duration: animationConfig.durations.fast }
+  }
+};
+
+// Factory functions for creating animation variants
+export const createScaleVariants = (scale: number = 0.8): Variants => ({
+  hidden: {
+    opacity: 0,
+    scale,
+    transition: baseTransition
+  },
+  visible: {
+    opacity: 1,
+    scale: 1,
+    transition: baseTransition
+  }
+});
+
+export const createRotateVariants = (rotation: number = 180): Variants => ({
+  hidden: {
+    opacity: 0,
+    rotate: rotation,
+    transition: baseTransition
+  },
+  visible: {
+    opacity: 1,
+    rotate: 0,
+    transition: baseTransition
+  }
+});

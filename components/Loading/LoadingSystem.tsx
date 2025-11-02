@@ -33,7 +33,7 @@ const spinnerVariants = {
     transition: {
       duration: 1,
       repeat: Infinity,
-      ease: 'linear'
+      ease: [0, 0, 1, 1]
     }
   }
 };
@@ -51,7 +51,7 @@ const pulseVariants = {
       duration: 1,
       repeat: Infinity,
       repeatType: 'reverse' as const,
-      ease: 'easeInOut'
+      ease: "easeInOut"
     }
   }
 };
@@ -72,13 +72,13 @@ const DotLoader: React.FC<{ size?: 'sm' | 'md' | 'lg' }> = ({ size = 'md' }) => 
         duration: 0.5,
         repeat: Infinity,
         repeatType: 'reverse' as const,
-        ease: 'easeInOut'
+        ease: "easeInOut"
       }
     }
   };
 
   return (
-    <HStack spacing={2}>
+    <HStack gap={2}>
       {[0, 1, 2].map((index) => (
         <MotionBox
           key={index}
@@ -105,13 +105,13 @@ const WaveLoader: React.FC<{ color?: string }> = ({ color = 'primary.500' }) => 
       transition: {
         duration: 1,
         repeat: Infinity,
-        ease: 'easeInOut'
+        ease: "easeInOut"
       }
     }
   };
 
   return (
-    <HStack spacing={1} align="end" h="40px">
+    <HStack gap={1} align="end" h="40px">
       {[0, 1, 2, 3, 4].map((index) => (
         <MotionBox
           key={index}
@@ -172,7 +172,7 @@ const CircularLoader: React.FC<{
         transition={progress === undefined ? {
           duration: 2,
           repeat: Infinity,
-          ease: 'linear'
+          ease: [0, 0, 1, 1]
         } : {}}
       >
         <motion.circle
@@ -190,11 +190,11 @@ const CircularLoader: React.FC<{
           }}
           transition={progress !== undefined ? {
             duration: 0.5,
-            ease: 'easeInOut'
+            ease: "easeInOut"
           } : {
             duration: 2,
             repeat: Infinity,
-            ease: 'linear'
+            ease: [0, 0, 1, 1]
           }}
         />
       </motion.svg>
@@ -256,7 +256,7 @@ export const FullPageLoader: React.FC<{
         exit={{ opacity: 0 }}
         transition={{ duration: 0.3 }}
       >
-        <VStack spacing={6}>
+        <VStack gap={6}>
           {renderLoader()}
           
           <MotionText
@@ -315,7 +315,7 @@ export const SectionLoader: React.FC<{
       _dark={{ bg: 'neutral.800' }}
       borderRadius="lg"
     >
-      <VStack spacing={4}>
+      <VStack gap={4}>
         {renderLoader()}
         {message && (
           <Text fontSize="sm" color="neutral.600" _dark={{ color: 'neutral.400' }}>
@@ -349,11 +349,11 @@ export const CardSkeleton: React.FC<{
       )}
       
       <Box p={6}>
-        <VStack align="stretch" spacing={4}>
+        <VStack align="stretch" gap={4}>
           {hasAvatar && (
-            <HStack spacing={3}>
+            <HStack gap={3}>
               <SkeletonCircle size="10" />
-              <VStack align="flex-start" spacing={1}>
+              <VStack align="flex-start" gap={1}>
                 <Skeleton height="4" width="100px" />
                 <Skeleton height="3" width="60px" />
               </VStack>
@@ -363,7 +363,7 @@ export const CardSkeleton: React.FC<{
           <Skeleton height="6" width="80%" />
           <SkeletonText noOfLines={3} spacing="2" />
           
-          <HStack spacing={2}>
+          <HStack gap={2}>
             <Skeleton height="6" width="60px" borderRadius="full" />
             <Skeleton height="6" width="80px" borderRadius="full" />
             <Skeleton height="6" width="70px" borderRadius="full" />
@@ -405,14 +405,14 @@ export const GridSkeleton: React.FC<{
 // Text skeleton loader
 export const TextSkeleton: React.FC<{
   lines?: number;
-  spacing?: string;
+  spacing?: number;
   width?: string[];
-}> = ({ lines = 3, spacing = '2', width }) => {
+}> = ({ lines = 3, spacing = 2, width }) => {
   const defaultWidths = ['100%', '80%', '60%'];
   const lineWidths = width || defaultWidths;
 
   return (
-    <VStack align="stretch" spacing={spacing}>
+    <VStack align="stretch" gap={spacing}>
       {Array.from({ length: lines }, (_, index) => (
         <Skeleton
           key={index}
@@ -438,7 +438,7 @@ export const ButtonLoader: React.FC<{
   };
 
   return (
-    <HStack spacing={2}>
+    <HStack gap={2}>
       <AnimatePresence mode="wait">
         {isLoading ? (
           <motion.div
@@ -448,7 +448,7 @@ export const ButtonLoader: React.FC<{
             exit={{ opacity: 0, scale: 0.8 }}
             transition={{ duration: 0.2 }}
           >
-            <HStack spacing={2}>
+            <HStack gap={2}>
               <Spinner size={spinnerSize[size]} />
               {loadingText && <Text>{loadingText}</Text>}
             </HStack>

@@ -51,17 +51,17 @@ const ErrorFallback: React.FC<{
   onRetry: () => void;
   onGoHome: () => void;
 }> = ({ error, errorInfo, errorId, onRetry, onGoHome }) => {
-  const { isOpen, onToggle } = useDisclosure();
+  const { open, onToggle } = useDisclosure();
   const isDevelopment = process.env.NODE_ENV === "development";
 
   return (
     <Box minH="100vh" display="flex" alignItems="center" justifyContent="center" bg="neutral.50" _dark={{ bg: "neutral.900" }} p={4}>
       <Container maxW="2xl">
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4 }}>
-          <VStack spacing={8} textAlign="center">
+          <VStack gap={8} textAlign="center">
             <Box fontSize="6xl" color="red.500" _dark={{ color: "red.400" }}>💥</Box>
 
-            <VStack spacing={4}>
+            <VStack gap={4}>
               <Text fontSize={{ base: "2xl", md: "3xl" }} fontWeight="bold" color="neutral.800" _dark={{ color: "neutral.100" }}>
                 Oops! Something went wrong
               </Text>
@@ -72,7 +72,7 @@ const ErrorFallback: React.FC<{
 
             {/* Cartão simples de erro (sem subcomponentes namespaced) */}
             <Box w="100%" maxW="600px" textAlign="left" p={4} borderWidth="1px" borderRadius="lg" bg="red.50" _dark={{ bg: "red.900", borderColor: "red.700" }}>
-              <VStack align="stretch" spacing={3}>
+              <VStack align="stretch" gap={3}>
                 <Text fontWeight="semibold">Error Details</Text>
                 <Text fontSize="sm"><strong>Error ID:</strong> {errorId}</Text>
                 <Text fontSize="sm"><strong>Message:</strong> {String(error?.message ?? "")}</Text>
@@ -84,12 +84,12 @@ const ErrorFallback: React.FC<{
                     <HStack justify="space-between" align="center">
                       <Text fontSize="sm" fontWeight="semibold">Technical Details (Development Mode)</Text>
                       <IconButton aria-label="Toggle details" size="sm" variant="ghost" onClick={onToggle}>
-                        {isOpen ? <FaChevronUp /> : <FaChevronDown />}
+                        {open ? <FaChevronUp /> : <FaChevronDown />}
                       </IconButton>
                     </HStack>
 
-                    {isOpen && (
-                      <VStack align="stretch" spacing={3}>
+                    {open && (
+                      <VStack align="stretch" gap={3}>
                         <Box>
                           <Text fontSize="xs" fontWeight="semibold" mb={2}>Stack Trace:</Text>
                           <Code display="block" whiteSpace="pre-wrap" fontSize="xs" p={3} borderRadius="md" maxH="200px" overflowY="auto">
@@ -111,18 +111,21 @@ const ErrorFallback: React.FC<{
               </VStack>
             </Box>
 
-            <HStack spacing={4} wrap="wrap" justify="center">
-              <Button leftIcon={<FaRedo />} colorScheme="primary" size="lg" onClick={onRetry}>
+            <HStack gap={4} wrap="wrap" justify="center">
+              <Button colorScheme="primary" size="lg" onClick={onRetry}>
+                <FaRedo style={{ marginRight: '8px' }} />
                 Try Again
               </Button>
-              <Button leftIcon={<FaHome />} variant="outline" size="lg" onClick={onGoHome}>
+              <Button variant="outline" size="lg" onClick={onGoHome}>
+                <FaHome style={{ marginRight: '8px' }} />
                 Go Home
               </Button>
               {isDevelopment && (
-                <Button leftIcon={<FaBug />} variant="ghost" size="lg" onClick={() => {
+                <Button variant="ghost" size="lg" onClick={() => {
                   console.error("Error for debugging:", error);
                   console.error("Error info for debugging:", errorInfo);
                 }}>
+                  <FaBug style={{ marginRight: '8px' }} />
                   Debug
                 </Button>
               )}

@@ -1,19 +1,17 @@
-"use client"
-
 import { Field as ChakraField } from "@chakra-ui/react"
-import { forwardRef } from "react"
+import * as React from "react"
 
-export interface FieldProps extends ChakraField.RootProps {
+export interface FieldProps extends Omit<ChakraField.RootProps, "label"> {
   label?: React.ReactNode
   helperText?: React.ReactNode
   errorText?: React.ReactNode
   optionalText?: React.ReactNode
-  children: React.ReactNode
 }
 
-export const Field = forwardRef<HTMLDivElement, FieldProps>(
+export const Field = React.forwardRef<HTMLDivElement, FieldProps>(
   function Field(props, ref) {
-    const { label, children, helperText, errorText, optionalText, ...rest } = props
+    const { label, children, helperText, errorText, optionalText, ...rest } =
+      props
     return (
       <ChakraField.Root ref={ref} {...rest}>
         {label && (

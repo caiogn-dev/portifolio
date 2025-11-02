@@ -383,41 +383,6 @@ const config = defineConfig({
       Button: buttonRecipe,
       Card: cardRecipe,
       Input: inputRecipe
-    },
-    
-    // Global styles
-    globalCss: {
-      '*': {
-        margin: 0,
-        padding: 0,
-        boxSizing: 'border-box'
-      },
-      'html': {
-        scrollBehavior: 'smooth'
-      },
-      'body': {
-        fontFamily: 'body',
-        lineHeight: 'normal',
-        color: 'neutral.900',
-        bg: 'white',
-        _dark: {
-          color: 'neutral.100',
-          bg: 'neutral.900'
-        }
-      },
-      '::selection': {
-        bg: 'primary.100',
-        color: 'primary.900',
-        _dark: {
-          bg: 'primary.800',
-          color: 'primary.100'
-        }
-      },
-      ':focus-visible': {
-        outline: '2px solid',
-        outlineColor: 'primary.500',
-        outlineOffset: '2px'
-      }
     }
   }
 });
